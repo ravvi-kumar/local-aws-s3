@@ -1,23 +1,13 @@
-import { Hono } from 'hono'
-import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { Hono } from 'hono';
+import { BUCKET_NAME } from './utils/constants';
+import { s3Client } from "./utils/s3-client";
 
 const app = new Hono()
 
-// Initialize S3 client
-const s3Client = new S3Client({
-  endpoint: 'http://localhost:4566',
-  forcePathStyle: true,
-  region: 'us-east-1',
-  credentials: {
-    accessKeyId: 'test',
-    secretAccessKey: 'test'
-  }
-});
-
 // Constants
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const BUCKET_NAME = 'my-local-bucket';
 
 app.get('/', (c) => {
   return c.text('Hello Hono!')

@@ -1,15 +1,23 @@
 {
   "name": "localaws",
   "scripts": {
-    "dev": "bun run --hot src/index.ts"
+    "dev": "bun run --hot src/index.ts",
+    "function:build": "esbuild ./src/lambda/index.ts --bundle --platform=node --target=node18 --outfile=./lambda/index.js",
+    "function:zip": "bun run function:build && zip -j lambda.zip ./lambda/index.js",
+    "function:create": "awslocal lambda create-function --function-name s3-trigger-function --runtime nodejs18.x --role arn:aws:iam::000000000000:role/lambda-role --handler index.handler --zip-file fileb://lambda.zip",
+    "function:update": "awslocal lambda update-function-code --function-name s3-trigger-function --zip-file fileb://lambda.zip",
+    "function:deploy": "awslocal s3api put-bucket-notification-configuration --bucket my-local-bucket --notification-configuration file://notification.json"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.744.0",
     "@aws-sdk/s3-request-presigner": "^3.744.0",
+    "aws-lambda": "^1.0.7",
     "aws-sdk": "^2.1692.0",
     "hono": "^4.7.1"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/aws-lambda": "^8.10.147",
+    "@types/bun": "latest",
+    "esbuild": "^0.25.0"
   }
 }

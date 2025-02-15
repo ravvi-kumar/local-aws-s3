@@ -1,2 +1,7 @@
 # deps
 node_modules/
+
+volume
+
+/lambda
+/lambda.zip
